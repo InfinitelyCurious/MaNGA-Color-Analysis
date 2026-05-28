@@ -1,9 +1,10 @@
+```
 # MaNGA Color-Mass Analysis Tools
 
-Comprehensive color-mass and color-magnitude analysis suite with empirically-derived green valley boundaries and dust corrections for SDSS-IV MaNGA galaxy samples.
-
-[![Python](https://img.shields.io/badge/Python-3.8%2B-blue)](https://www.python.org/)
+[![Python](https://img.shields.io/badge/python-3.8%2B-blue)](https://www.python.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
+Comprehensive color-mass and color-magnitude analysis suite with empirically-derived green valley boundaries and dust corrections for SDSS-IV MaNGA galaxy samples.
 
 ## Overview
 
@@ -13,12 +14,12 @@ This toolkit provides methods for analyzing galaxy evolution through color-mass 
 
 ## Features
 
-- **Dust Correction Implementation**: Uses Schlegel+ extinction maps with extinction_coefficient package in "simple mode"
-- **Empirically-Derived Green Valley Boundaries**: Quantitative definitions from balanced 50k+ galaxy samples
-- **Multi-Color Analysis**: (u-r), (g-r), and (u-g) color indices
-- **Mass-Scaling Visualization**: Marker size and colormap encode stellar mass information
-- **Contour Density Mapping**: 10x10 binning reveals population structure
-- **Morphology Integration**: Supports MVM-VAC morphological classifications
+- **Dust Correction Implementation:** Uses Schlegel+ extinction maps with Zhang & Yuan (2022) extinction coefficients
+- **Empirically-Derived Green Valley Boundaries:** Quantitative definitions from balanced 50k+ galaxy samples
+- **Multi-Color Analysis:** (u-r), (g-r), and (u-g) color indices
+- **Mass-Scaling Visualization:** Marker size and colormap encode stellar mass information
+- **Contour Density Mapping:** 10×10 binning reveals population structure
+- **Morphology Integration:** Supports MVM-VAC morphological classifications (Vázquez-Mata+ 2022)
 
 ## Scientific Context
 
@@ -36,7 +37,6 @@ Traditional studies reference the "green valley" as a transitional region betwee
 ```bash
 git clone https://github.com/InfinitelyCurious/MaNGA-Color-Mass-Analysis.git
 cd MaNGA-Color-Mass-Analysis
-
 pip install -r requirements.txt
 ```
 
@@ -61,27 +61,76 @@ from color_mass_diagram import create_color_mass_diagram
 # Create color-mass diagram with dust correction
 create_color_mass_diagram(
     save_plot=True,
-    apply_dust_correction=True,
-    supplement_background=True
+    apply_dust_correction=True
 )
 ```
 
-### Output:
+**Output:**
 - Contour map of SDSS background population
 - Your sample galaxies with morphology-based coloring
 - Empirically-derived green valley boundaries
 - Mass-scaled markers
 
+## Configuration
+
+**Before running, edit the USER CONFIGURATION section** at the top of `color_mass_diagram.py`:
+
+```python
+# Base directory containing your data files
+BASE_PATH = '/path/to/your/data/'  # CHANGE THIS
+
+# Your data files
+BACKGROUND_SAMPLE_FILE = f"{BASE_PATH}your_background_galaxies.csv"
+YOUR_SAMPLE_FILE = f"{BASE_PATH}your_galaxy_sample.csv"
+MORPHOLOGY_FILE = f"{BASE_PATH}your_morphology_data.csv"  # Optional
+
+# Column name mapping (adjust to match your CSV headers)
+YOUR_SAMPLE_COLS = {
+    'id': 'plateifu',              # Galaxy identifier
+    'redshift': 'redshift',
+    'u': 'u',
+    'g': 'g',
+    'r': 'r',
+    'mass': 'log_mass'             # Stellar mass column
+}
+```
+
+See inline code comments for complete configuration options.
+
+## Data Requirements
+
+### Background Sample
+- **Source:** SDSS DR17 random catalog via CasJobs
+- **Size:** 50,000 galaxies (balanced blue/red after strategic filtering)
+- **Required Columns:** `redshift`, `u`, `g`, `r`
+- **Optional Columns:** `log_total_mass_median` (or equivalent mass column)
+
+### Your Sample
+- **Source:** Your catalog (e.g., E+A galaxies, post-starburst systems, or custom sample)
+- **Required Columns:** 
+  - Galaxy ID (e.g., `plateifu` for MaNGA)
+  - `redshift`
+  - `u`, `g`, `r` (SDSS magnitudes)
+  - `log_mass` (stellar mass)
+- **Optional Columns:** `morphology` (if using morphology-based coloring)
+
+### Morphology Data (Optional)
+- **Source:** MVM-VAC (Vázquez-Mata+ 2022) or equivalent
+- **Required Columns:** Galaxy ID, morphology classification
+- **Format:** CSV with matching IDs to your sample
+
+**Note:** Large data files (>100 MB) are excluded via `.gitignore`. See `data/README.md` for download instructions and required CSV structure.
+
 ## Methodology
 
 ### Dust Correction
 
-Implements Schlegel, Finkbeiner & Davis (1998) extinction maps via `extinction_coefficient` package:
+Implements Schlegel, Finkbeiner & Davis (1998) extinction maps via Zhang & Yuan (2022) extinction coefficients:
 
 ```python
 from extinction_coefficient import extinction_coefficient
 
-# Get extinction coefficients
+# Get extinction coefficients for SDSS filters
 A_u = extinction_coefficient("u'", mode='simple')
 A_g = extinction_coefficient("g'", mode='simple')  
 A_r = extinction_coefficient("r'", mode='simple')
@@ -92,27 +141,28 @@ u_corrected = u_observed - A_u * E(B-V)
 
 **Default E(B-V):** 0.08 (Milky Way foreground)
 
+**Reference:** Zhang & Yuan (2022), ApJS, 264, 14
+
 ### Green Valley Modeling
 
-1. **Strategic Sampling:** Load full cidcuts data (~40k galaxies) + SDSS supplement
+1. **Strategic Sampling:** Load full background data + SDSS supplement for blue cloud boost
 2. **Blue Boosting:** Replicate blue cloud galaxies (g-r < 0.5) to balance red sequence bias
-3. **Density Mapping:** 10x10 histogram with minimum threshold (400 galaxies/bin)
+3. **Density Mapping:** 10×10 histogram with minimum threshold (400 galaxies/bin)
 4. **Boundary Extraction:** Linear fits to empirical valley edges
 
 **Resulting boundaries (u-r vs. log M*):**
-```
-Lower: (u-r) = 2.0 + 0.27*(log M* - 8.5) - 0.42
-Upper: (u-r) = 2.0 + 0.27*(log M* - 8.5)
-```
+- Lower: `(u-r) = 2.0 + 0.27*(log M* - 8.5) - 0.42`
+- Upper: `(u-r) = 2.0 + 0.27*(log M* - 8.5)`
 
 ### Morphology Classification
 
-Integrates with MaNGA Visual Morphologies VAC (MVM-VAC) for 6-category classification:
+Integrates with MaNGA Visual Morphologies VAC (MVM-VAC; Vázquez-Mata+ 2022) for 6-category classification:
+
 - Spiral
 - Barred Spiral
 - Weakly Barred Spiral
 - Lenticular
-- Elliptical  
+- Elliptical
 - Unknown
 
 Color-coded markers reveal morphology-evolution decoupling.
@@ -125,73 +175,41 @@ Color-coded markers reveal morphology-evolution decoupling.
 # Color-mass with morphology (Chapter 3, Greene 2026)
 create_color_mass_diagram(
     save_plot=True,
-    apply_dust_correction=True,
-    supplement_background=True
+    apply_dust_correction=True
 )
 ```
 
 ### Custom Sample Analysis
 
 ```python
-# Analyze your own galaxy sample
-from color_mass_diagram import load_your_sample, create_color_mass_diagram
+# 1. Update configuration in color_mass_diagram.py
+BASE_PATH = '/path/to/your/data/'
+YOUR_SAMPLE_FILE = f"{BASE_PATH}my_galaxies.csv"
 
-# Load your catalog (requires: plateifu, u, g, r, redshift, mass, morphology)
-masses, ur, morphologies, *_ = load_your_sample(
-    sample_file='your_galaxies.csv',
-    apply_dust_correction=True
-)
+# 2. Adjust column mapping to match your CSV
+YOUR_SAMPLE_COLS = {
+    'id': 'galaxy_id',           # Your ID column name
+    'redshift': 'z',             # Your redshift column name
+    'u': 'u_mag',                # Your u-band column name
+    'g': 'g_mag',
+    'r': 'r_mag',
+    'mass': 'stellar_mass'       # Your mass column name
+}
 
-# Customize plot parameters in configuration section
+# 3. Run analysis
 create_color_mass_diagram(save_plot=True)
 ```
 
-### Generate All Three Color Diagrams
-
-```python
-# (u-r) vs. log M*
-create_color_mass_diagram(apply_dust_correction=True)
-
-# Additional color indices can be implemented following the same framework
-```
-
-## Data Requirements
-
-### Background Sample
-- **Source:** SDSS DR17 random catalog via CasJobs
-- **Size:** 50,000 galaxies (balanced blue/red after strategic filtering)
-- **Columns:** redshift, u, g, r, log_total_mass_median
-
-### Your Sample  
-- **Source:** Your catalog (e.g., 183 E+A galaxies or custom sample)
-- **Columns:** plateifu (or galaxy ID), redshift, u, g, r, log_mass, morphology (optional)
-
-**Note:** Large data files (>100 MB) are excluded via `.gitignore`. See `data/README.md` for download instructions and required CSV structure.
-
-## Customization
-
-The code is designed to be generic and user-friendly. Key configuration options:
-
-**In the USER CONFIGURATION section** (top of `color_mass_diagram.py`):
-- `BASE_PATH`: Your data directory
-- `BACKGROUND_SAMPLE_FILE`: Your background galaxy CSV
-- `YOUR_SAMPLE_FILE`: Your galaxy sample CSV
-- Column name mappings (adjust to match your CSV headers)
-- `APPLY_DUST_CORRECTION`: Toggle dust corrections
-- `MAX_BACKGROUND_GALAXIES`: Sample size for contour mapping
-
-See inline comments in code for detailed customization instructions.
-
 ## Output Examples
 
-**Color-Mass Diagram Features:**
+### Color-Mass Diagram Features:
 - Background contours reveal bimodal population structure
 - Green valley boundaries (green lines) separate evolutionary regions
 - Sample galaxies color-coded by morphology
 - Marker size scales with stellar mass
 - Legend includes morphology counts
 
-**Files Generated:**
+### Files Generated:
 - `color_mass_diagram_morphology_dust_corrected.png`
 - Customizable DPI (default: 300)
 - Publication-ready formatting
@@ -199,9 +217,9 @@ See inline comments in code for detailed customization instructions.
 ## Validation
 
 Boundaries validated against:
-- Schawinski+ (2014) evolutionary tracks ✓
-- Eales+ tri-modal modeling ✓
-- Independent MaNGA color-mass distributions ✓
+- ✓ Schawinski+ (2014) evolutionary tracks
+- ✓ Eales+ tri-modal modeling
+- ✓ Independent MaNGA color-mass distributions
 
 **Consistency:** 74% of 183 E+A galaxies fall within defined green valley (expected for post-starburst systems).
 
@@ -223,9 +241,25 @@ Boundaries validated against:
 
 ## Citation
 
+If you use this code in your research, please cite:
+
+### Primary Reference:
+```bibtex
+@article{Greene2026catalog,
+  author = {Greene, Olivia A. and others},
+  title = {A Complete Catalog of Post-starburst, E+A Galaxies in SDSS-IV MaNGA (MPL-11):
+           A Citizen Science Approach to Spectrophotometric Classification and
+           the Automation of Equivalent Width Measurements},
+  journal = {The Astrophysical Journal},
+  year = {2026},
+  note = {In Preparation}
+}
+```
+
+### Dissertation Reference:
 ```bibtex
 @phdthesis{Greene2026thesis,
-  author = {Greene, Olivia A},
+  author = {Greene, Olivia A.},
   title = {Seeing What Is, What Was, What Could Be, What Must Not: 
            Refining, Cataloging, and Investigating A Complete, 
            Spatially Resolved Spectrophotometric Sample of Nearby 
@@ -234,23 +268,60 @@ Boundaries validated against:
   year = {2026},
   note = {Chapter 3: Color-Mass Analysis Methodology}
 }
+```
 
-@article{Greene2026,
-  author = {Greene, Olivia A., et. al.},
-  title = {A Complete Catalog of Post-starburst, E+A Galaxies in SDSS-IV MaNGA (MPL-11):
-           A Citizen Science Approach to Spectrophotometric Classification \&
-           the Automation of Equivalent Width Measurements},
+### Foundational Work:
+```bibtex
+@article{Greene2021,
+  author = {Greene, Olivia A. and Liu, Charles T. and Holley-Bockelmann, Kelly and others},
+  title = {Refining the E+A Galaxy: A Spatially Resolved Spectrophotometric Sample 
+           of Nearby Post-starburst Systems in SDSS-IV MaNGA (MPL-5)},
   journal = {The Astrophysical Journal},
-  year = {2026},
-  note = {In Preparation}
+  volume = {910},
+  pages = {162},
+  year = {2021},
+  doi = {10.3847/1538-4357/abe4d0}
+}
+```
+
+### Key Dependencies:
+**Morphology Data:**
+```bibtex
+@article{morphVAC,
+  author = {V{\'a}zquez-Mata, J. A. and Hern{\'a}ndez-Toledo, H. M. and 
+            Avila-Reese, V. and Herrera-Endoqui, M. and Rodr{\'\i}guez-Puebla, A. and 
+            Cano-D{\'\i}az, M. and Lacerna, I. and Mart{\'\i}nez-V{\'a}zquez, L. A. and Lane, R.},
+  title = {SDSS IV MaNGA: visual morphological and statistical characterization 
+           of the DR15 sample},
+  journal = {Monthly Notices of the Royal Astronomical Society},
+  volume = {512},
+  number = {2},
+  pages = {2222-2244},
+  year = {2022},
+  doi = {10.1093/mnras/stac635}
+}
+```
+
+**Dust Extinction Coefficients:**
+```bibtex
+@article{extinction,
+  author = {Zhang, Ruoyi and Yuan, Haibo},
+  title = {Empirical Temperature- and Extinction-dependent Extinction Coefficients 
+           for the GALEX, Pan-STARRS 1, Gaia, SDSS, 2MASS, and WISE Passbands},
+  journal = {The Astrophysical Journal Supplement Series},
+  volume = {264},
+  number = {1},
+  pages = {14},
+  year = {2022},
+  doi = {10.3847/1538-4365/ac9dfa}
 }
 ```
 
 ## Related Projects
 
-- **[MEWS](https://github.com/InfinitelyCurious/Measuring-Equivalent-Width-in-Spectra-MEWS-)**: Equivalent width measurement pipeline
-- **E+A Galaxy Catalog**: 183 spatially-resolved post-starburst galaxies (in development)
-- **MOONJAM**: MaNGA diagnostic suite (collaborative project, in development)
+- **MEWS:** Equivalent width measurement pipeline ([GitHub](https://github.com/InfinitelyCurious/Measuring-Equivalent-Width-in-Spectra-MEWS-))
+- **E+A Galaxy Catalog:** 183 spatially-resolved post-starburst galaxies (in development)
+- **MOONJAM:** MaNGA diagnostic suite (collaborative project, in development)
 
 ## Contributing
 
@@ -262,35 +333,44 @@ Contributions welcome! Areas for enhancement:
 
 ## Troubleshooting
 
-**Common Issues:**
+### Common Issues:
 
-**"File not found" errors**
-→ Update `BASE_PATH` and filename variables in USER CONFIGURATION section
+1. **"File not found" errors**
+   - Update `BASE_PATH` and filename variables in USER CONFIGURATION section
 
-**"Red sequence bias in background sample"**
-→ Increase blue boosting factor (currently 3x replication in code)
+2. **"Red sequence bias in background sample"**
+   - Increase blue boosting factor (currently 3× replication in code)
 
-**"Green valley boundaries don't match literature"**
-→ Check dust correction applied consistently to both background and sample
+3. **"Green valley boundaries don't match literature"**
+   - Check dust correction applied consistently to both background and sample
 
-**"Morphology data missing"**
-→ Script continues without morphology; ensure MVM-VAC catalog downloaded and plateifu formats match
+4. **"Morphology data missing"**
+   - Script continues without morphology; ensure MVM-VAC catalog downloaded and plateifu formats match
 
-**Column name mismatches**
-→ Update column mapping variables in configuration section to match your CSV headers
+5. **Column name mismatches**
+   - Update column mapping variables in configuration section to match your CSV headers
+
+6. **"extinction_coefficient package not found"**
+   ```bash
+   pip install extinction_coefficient
+   ```
 
 ## Acknowledgments
 
 Developed at Vanderbilt University (2020-2026) as part of dissertation research on post-starburst galaxies in MaNGA.
 
-**Advisors:**
+### Advisors:
 - Dr. Kelly Holley-Bockelmann (Vanderbilt University)
 - Dr. Charles T. Liu (CUNY College of Staten Island / American Museum of Natural History)
 
-**Data Sources:**
+### Data Sources:
 - SDSS-IV MaNGA Survey
 - Schlegel, Finkbeiner & Davis (1998) dust maps
-- MaNGA Visual Morphologies VAC (Domínguez Sánchez+ 2022)
+- MaNGA Visual Morphologies VAC (Vázquez-Mata+ 2022)
+- Zhang & Yuan (2022) extinction coefficients
+
+### Collaborators:
+Special thanks to the 27 citizen scientists who contributed to the E+A galaxy classification project across the MPL-11 sample.
 
 ## License
 
@@ -300,7 +380,10 @@ MIT License - See LICENSE file for details
 
 **Olivia A. Greene, PhD**  
 Astrophysicist | Pipeline Developer  
-Email: oliviaallegragreene@gmail.com  
-Website: https://galaxygreene.com  
-GitHub: [@InfinitelyCurious](https://github.com/InfinitelyCurious)
+📧 Email: oliviaallegragreene@gmail.com  
+🌐 Website: https://galaxygreene.com  
+💻 GitHub: [@InfinitelyCurious](https://github.com/InfinitelyCurious)
 
+---
+
+**Last Updated:** January 2026

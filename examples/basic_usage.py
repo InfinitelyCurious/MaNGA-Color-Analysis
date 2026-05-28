@@ -1,3 +1,4 @@
+"""
 Basic usage example for MaNGA Color-Mass Analysis Tools
 
 This script demonstrates the simplest way to create a color-mass diagram

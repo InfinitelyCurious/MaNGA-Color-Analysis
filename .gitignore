@@ -1,95 +1,52 @@
+# Large data files
+*.fits
+*.csv
+data/*.csv
+!data/README.md
+!data/.gitkeep
+
 # Python
 __pycache__/
 *.py[cod]
 *$py.class
 *.so
 .Python
-build/
-develop-eggs/
-dist/
-downloads/
-eggs/
-.eggs/
-lib/
-lib64/
-parts/
-sdist/
-var/
-wheels/
-*.egg-info/
-.installed.cfg
-*.egg
-
-# Virtual environments
-venv/
 env/
+venv/
 ENV/
+build/
+dist/
+*.egg-info/
+.venv/
 
-# Jupyter Notebook
-.ipynb_checkpoints
-*.ipynb_checkpoints
+# Jupyter Notebooks
+.ipynb_checkpoints/
+*.ipynb
 
-# IDEs
-.idea/
+# Output files (don't track generated plots)
+output/*.png
+output/*.pdf
+output/*.jpg
+!output/README.md
+!output/.gitkeep
+
+# IDE specific
 .vscode/
+.idea/
 *.swp
 *.swo
-*~
+.spyderproject
+.spyproject
 
-# Large data files - users should download separately
-data/*.csv
-data/*.fits
-data/*.dat
-
-# Specific large files mentioned in your code
-data/cidcuts_data.csv
-data/SDSS_random_gxy_sample.csv
-data/30k_colourmass.csv
-data/SRV_colour_data.csv
-data/MPL11_SRV_mass.csv
-data/MPL_SRV_dissertation_sample_list.csv
-data/MPL11_SRV_morph_RESULTS.csv
-
-# Keep small example data only
-!data/README.md
-!data/example_10_galaxies.csv
-!data/column_descriptions.txt
-
-# Output plots - keep examples only
-output_plots/*.png
-!output_plots/example_color_mass_diagram.png
-!output_plots/example_color_magnitude_gr.png
-!output_plots/example_color_magnitude_ug.png
+# OS specific
+.DS_Store
+Thumbs.db
+*.bak
 
 # Temporary files
-*.log
 *.tmp
-temp/
-tmp/
-
-# OS files
-# Mac
-.DS_Store
-.AppleDouble
-.LSOverride
-._*
-
-# Windows
-Thumbs.db
-ehthumbs.db
-Desktop.ini
-
-# Linux
+*.log
 *~
 
-# Editor backups
-*.bak
-*.swp
-
-# pytest
-.pytest_cache/
-.coverage
-htmlcov/
-
-# Documentation
+# Documentation builds
 docs/_build/

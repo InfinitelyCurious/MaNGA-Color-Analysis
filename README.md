@@ -20,6 +20,42 @@ This toolkit provides methods for analyzing galaxy evolution through color-mass 
 - **Contour Density Mapping:** 10×10 binning reveals population structure
 - **Morphology Integration:** Supports MVM-VAC morphological classifications (Vázquez-Mata+ 2022)
 
+## Example Output
+
+The toolkit generates publication-quality visualizations demonstrating the evolutionary positioning of galaxy samples within established color-mass-magnitude space.
+
+### Color-Mass Diagram with Morphology Classification
+
+![Color-Mass Diagram](output/example_color_mass_diagram.png)
+
+**Figure:** (u-r) color vs. stellar mass for 183 E+A galaxies from SDSS-IV MaNGA DR17. Galaxies are color-coded by morphological type from the MVM-VAC (Vázquez-Mata+ 2022): spirals (purple), barred spirals (dark blue), weakly barred spirals (light blue), lenticulars (green), ellipticals (red), and unknown (yellow). Background contours show density distribution of 50,000 random SDSS galaxies. Green lines delineate empirically-derived green valley boundaries following Greene (2026) methodology. The sample demonstrates morphology-evolution decoupling: 44% lenticular, 43% spiral, 13% elliptical, all occupying the transitional green valley regardless of structural type.
+
+### Color-Magnitude Diagrams (Two-Panel Comparison)
+
+![Color-Magnitude Two-Panel](output/example_color_magnitude_two_panel.png)
+
+**Figure:** Two-panel comparison showing (u-g) vs. M_g (left) and (g-r) vs. M_r (right) for the same 183 galaxy sample. Marker size scales with stellar mass, revealing the mass-dependent nature of the green valley across different color indices. This multi-wavelength view confirms consistent sample positioning in the transitional evolutionary zone between the blue cloud (star-forming) and red sequence (passive) populations. The dual-panel presentation demonstrates the toolkit's capability to produce comprehensive multi-color analysis in a single, publication-ready figure.
+
+### Key Features Demonstrated
+
+- **Contour density mapping** reveals bimodal (blue cloud + red sequence) population structure in background
+- **Green valley boundaries** explicitly defined and validated against literature (Schawinski+ 2014, Eales+ 2018)
+- **Morphology-based coloring** shows diversity across Hubble types within a single evolutionary state
+- **Mass-scaling visualization** encodes additional information through marker size and colormap
+- **Multi-panel layouts** enable comprehensive color-index comparisons in single figures
+- **Publication-ready formatting** with proper labels, legends, and professional aesthetics (300 DPI)
+
+### Technical Specifications
+
+- **Output Format:** PNG
+- **Resolution:** 300 DPI (publication quality)
+- **Dimensions:** 12" × 9" (single panel); 18" × 9" (two-panel)
+- **File Size:** 2-5 MB per plot
+- **Color Space:** RGB
+- **Dust Correction:** Applied using Zhang & Yuan (2022) extinction coefficients with E(B-V) = 0.08
+
+These figures are from Greene (2026) dissertation, Chapter 3: "A Complete Catalog of Post-starburst, E+A Galaxies in SDSS-IV MaNGA (MPL-11)."
+
 ## Scientific Context
 
 Traditional studies reference the "green valley" as a transitional region between star-forming (blue cloud) and quiescent (red sequence) populations, but rarely provide explicit boundary definitions. This toolkit addresses that gap by:

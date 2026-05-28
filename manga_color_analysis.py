@@ -3,26 +3,87 @@ MaNGA Color-Mass Analysis Tools
 Comprehensive color-mass and color-magnitude analysis with empirically-derived 
 green valley boundaries and dust corrections for SDSS-IV MaNGA galaxy samples.
 
-Author: Olivia A. Greene, PhD
+================================================================================
+AUTHOR & CONTACT
+================================================================================
+Olivia A. Greene, PhD
 Vanderbilt University (2020-2026)
-GitHub: @InfinitelyCurious
-Contact: oliviaallegragreene@gmail.com
-License: MIT
+Astrophysicist | Pipeline Developer
 
-Primary Citation (Dissertation):
+Email: oliviaallegragreene@gmail.com
+Website: https://galaxygreene.com
+GitHub: @InfinitelyCurious
+
+================================================================================
+PRIMARY CITATION (DISSERTATION)
+================================================================================
 Greene, O. A. (2026). "Seeing What Is, What Was, What Could Be, What Must Not: 
 Refining, Cataloging, and Investigating A Complete, Spatially Resolved 
 Spectrophotometric Sample of Nearby Post-Starburst E+A Galaxies in SDSS-IV MaNGA." 
-PhD Dissertation, Vanderbilt University. 339 pages.
-Advisors: Dr. Kelly Holley-Bockelmann, Dr. Charles T. Liu
+PhD Dissertation, Vanderbilt University. 300+ pages.
 
-Related Publication (In Prep):
+Advisors: 
+- Dr. Kelly Holley-Bockelmann (Vanderbilt University)
+- Dr. Charles T. Liu (CUNY College of Staten Island / American Museum of Natural History)
+
+This code implements the methodology from Chapter 3: Color-Mass Analysis.
+
+================================================================================
+RELATED PUBLICATION (IN PREPARATION)
+================================================================================
 Greene, O. A., et al. (2026). "A Complete Catalog of Post-starburst, E+A Galaxies 
 in SDSS-IV MaNGA (MPL-11): A Citizen Science Approach to Spectrophotometric 
 Classification & the Automation of Equivalent Width Measurements." 
 The Astrophysical Journal (In Preparation).
 
-Methodology from Chapter 3 of dissertation.
+================================================================================
+FOUNDATIONAL WORK
+================================================================================
+Greene, O. A., et al. (2021). "Refining the E+A Galaxy: A Spatially Resolved 
+Spectrophotometric Sample of Nearby Post-starburst Systems in SDSS-IV MaNGA 
+(MPL-5)." The Astrophysical Journal, 910, 162.
+DOI: 10.3847/1538-4357/abe4d0
+
+================================================================================
+KEY DEPENDENCIES & CITATIONS
+================================================================================
+Morphology Data:
+  Vázquez-Mata, J. A., et al. (2022). "SDSS IV MaNGA: visual morphological 
+  and statistical characterization of the DR15 sample." MNRAS, 512, 2222-2244.
+  DOI: 10.1093/mnras/stac635
+
+Dust Extinction Coefficients:
+  Zhang, R., & Yuan, H. (2022). "Empirical Temperature- and Extinction-dependent 
+  Extinction Coefficients for the GALEX, Pan-STARRS 1, Gaia, SDSS, 2MASS, and 
+  WISE Passbands." ApJS, 264, 14.
+  DOI: 10.3847/1538-4365/ac9dfa
+  GitHub: https://github.com/vnohhf/extinction_coeffcient/
+
+================================================================================
+LICENSE
+================================================================================
+MIT License - See LICENSE file for details
+
+Copyright (c) 2026 Olivia A. Greene
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+================================================================================
 """
 
 import numpy as np
@@ -173,6 +234,10 @@ def apply_simple_dust_correction(u, g, r, EBV_avg=DEFAULT_EBV):
     --------
     u_corrected, g_corrected, r_corrected : array-like
         Dust-corrected magnitudes
+        
+    References:
+    -----------
+    Zhang, R., & Yuan, H. (2022). ApJS, 264, 14
     """
     # Get extinction coefficients for SDSS filters
     A_u = extinction_coefficient("u'", mode='simple')
@@ -274,6 +339,10 @@ def load_morphology_data():
     --------
     morph_dict : dict
         Dictionary mapping galaxy IDs to morphology classifications
+        
+    References:
+    -----------
+    Vázquez-Mata, J. A., et al. (2022). MNRAS, 512, 2222-2244
     """
     morph_dict = {}
     
@@ -325,6 +394,11 @@ def classify_morphology(morph_type):
     broad_category : str
         One of: 'Spiral', 'Barred Spiral', 'Weakly Barred Spiral', 
                 'Lenticular', 'Elliptical', 'Unknown'
+                
+    References:
+    -----------
+    Based on Hubble classification system as implemented in:
+    Vázquez-Mata, J. A., et al. (2022). MNRAS, 512, 2222-2244
     """
     if pd.isna(morph_type) or morph_type is None or str(morph_type).strip() == '':
         return 'Unknown'
@@ -438,12 +512,18 @@ def create_color_mass_diagram(save_plot=True, apply_dust_correction=APPLY_DUST_C
     """
     Create color-mass diagram with morphology-based coloring
     
+    Implements methodology from Greene (2026) dissertation, Chapter 3.
+    
     Parameters:
     -----------
     save_plot : bool
         Save plot to OUTPUT_PATH
     apply_dust_correction : bool
         Apply dust corrections to data
+        
+    References:
+    -----------
+    Greene, O. A. (2026). PhD Dissertation, Vanderbilt University
     """
     print("\n" + "="*60)
     print("CREATING COLOR-MASS DIAGRAM")
@@ -572,6 +652,11 @@ def create_color_mass_diagram(save_plot=True, apply_dust_correction=APPLY_DUST_C
 if __name__ == "__main__":
     print("="*60)
     print("MaNGA COLOR-MASS ANALYSIS TOOLS")
+    print("="*60)
+    print("\nDeveloped by Olivia A. Greene, PhD")
+    print("Vanderbilt University (2020-2026)")
+    print("\nCitation: Greene, O. A. (2026). PhD Dissertation,")
+    print("          Vanderbilt University. Chapter 3.")
     print("="*60)
     print(f"\nConfiguration:")
     print(f"  Base path: {BASE_PATH}")

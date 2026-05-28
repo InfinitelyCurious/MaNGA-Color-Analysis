@@ -29,12 +29,34 @@ Advisors:
 This code implements the methodology from Chapter 3: Color-Mass Analysis.
 
 ================================================================================
-RELATED PUBLICATION (IN PREPARATION)
+PUBLICATIONS BY AUTHOR
 ================================================================================
-Greene, O. A., et al. (2026). "A Complete Catalog of Post-starburst, E+A Galaxies 
-in SDSS-IV MaNGA (MPL-11): A Citizen Science Approach to Spectrophotometric 
-Classification & the Automation of Equivalent Width Measurements." 
-The Astrophysical Journal (In Preparation).
+
+5. Greene, O. A., et al. (2026). "A Complete Catalog of Post-starburst, 
+   E+A Galaxies in SDSS-IV MaNGA (MPL-11): A Citizen Science Approach to 
+   Spectrophotometric Classification & the Automation of Equivalent Width 
+   Measurements." The Astrophysical Journal (In Preparation).
+
+4.Greene, O. A., Dungee, R., Schonhut-Stasik, J., & Oldham, L. (2025). 
+   "Neurodivergent in astronomy: the early-career researcher edition." 
+   Nature Astronomy, 9, 1754-1757. [First-author interview feature]
+   DOI: 10.1038/s41550-025-02742-0  
+
+3. Ludwig, E., Iyer, K., Liu, C. T., Grwiser, E., & Greene, O. A. (2025). 
+   "Comparing Star Formation Histories and Evolutionary Pathways of 
+   Post-Starburst and E+A Galaxies in TNG50 and SDSS-IV MaNGA." 
+   The Astrophysical Journal, 989(1), 87.
+   DOI: 10.3847/1538-4357/ade882
+
+2. Greene, O. A., et al. (2021). "Refining the E+A Galaxy: A Spatially 
+   Resolved Spectrophotometric Sample of Nearby Post-starburst Systems in 
+   SDSS-IV MaNGA (MPL-5)." The Astrophysical Journal, 910, 162.
+   DOI: 10.3847/1538-4357/abe4d0
+
+1. Marinelli, M., Greene, O. A., Riffel, R. A., Rowlands, K., & Liu, C. 
+   (2020). "SDSS-IV MaNGA: A Dwarf E+A Galaxy Quenched by AGN Feedback." 
+   Research Notes of the AAS, 4, 110.
+   DOI:  10.3847/2515-5172/aba595 
 
 ================================================================================
 FOUNDATIONAL WORK

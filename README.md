@@ -1,3 +1,5 @@
+### MaNGA Color Analysis Tools
+
 ```markdown
 # MaNGA Color-Mass Analysis Tools
 
